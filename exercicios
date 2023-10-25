@@ -1,3 +1,8 @@
 -- exercicio 1
 CREATE TRIGGER inserção_cliente AFTER INSERT ON Clientes
 	FOR EACH ROW INSERT INTO Auditoria VALUES("Um novo cliente foi inserido");
+
+-- exercicio 2
+
+CREATE TRIGGER tentativa_de_exclusao BEFORE DELETE ON Clientes
+	FOR EACH ROW INSERT INTO Auditoria VALUES("Houve uma tentativa de exclusão de um cliente");
