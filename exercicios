@@ -42,3 +42,27 @@ CREATE TRIGGER impedir_insercao BEFORE UPDATE ON Clientes
 		END IF //
 	END //
 DELIMITER ;
+
+-- exercicio 5
+
+DELIMITER //
+CREATE TRIGGER pedido AFTER INSERT ON Pedidos
+	FOR EACH ROW
+	BEGIN
+		DECLARE id_produto INT;
+		DECLARE pedido_quant INT;
+		DECLARE estoque_atual INT;
+		
+		SET id_produto = NEW.produto_id;
+		SET pedido_quant = NEW.quantidade;
+		
+		SELECT estoque INTO estoque_atual FROM Produtos WHERE id = id_produto;
+
+		UPDATE Produtos SET estoque = estoque - pedido_quant WHERE id = id_produto;
+		
+		IF estoque_atual - pedido_quant < 5 THEN
+			INSERT INTO Auditoria (mensagem, data_hora)
+			VALUES ("Estoque do produto " || id_produto || " está com menos de 5 unidades");
+		END IF //
+	END //
+DELIMITER ;
