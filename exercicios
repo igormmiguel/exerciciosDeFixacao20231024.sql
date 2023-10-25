@@ -6,3 +6,19 @@ CREATE TRIGGER inserção_cliente AFTER INSERT ON Clientes
 
 CREATE TRIGGER tentativa_de_exclusao BEFORE DELETE ON Clientes
 	FOR EACH ROW INSERT INTO Auditoria VALUES("Houve uma tentativa de exclusão de um cliente");
+
+-- exercicio 3
+
+DELIMITER //
+CREATE TRIGGER cliente_atulizado AFTER UPDATE ON Clientes
+	FOR EACH ROW
+	BEGIN
+		DECLARE novo_nome VARCHAR(100);
+		DECLARE antigo_nome VARCHAR(100);
+
+		SET nome_antigo = OLD.nome;
+		SET nome_novo = NEW.nome;
+
+		INSERT INTO Auditoria VALUES(antigo_nome, novo_nome);
+	END //
+DELIMITER ;
